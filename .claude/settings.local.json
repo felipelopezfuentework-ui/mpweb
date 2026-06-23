@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:marianapagescatering.lovable.app)",
+      "PowerShell(python --version 2>$null)",
+      "PowerShell(magick --version 2>$null)",
+      "PowerShell(python3 --version 2>$null)",
+      "PowerShell(py --version 2>$null)",
+      "PowerShell(Copy-Item \"c:\\\\Users\\\\Usuario\\\\Consultoresvision Dropbox\\\\Gesti�n Visi�n\\\\3_Felipe Lopez Fuente\\\\MP\\\\MP Web\\\\cocina contemp.jpg\" \"c:\\\\Users\\\\Usuario\\\\Consultoresvision Dropbox\\\\Gesti�n Visi�n\\\\3_Felipe Lopez Fuente\\\\MP\\\\MP Web\\\\assets\\\\gastronomia-cocina-contemporanea.jpg\" -Force)",
+      "PowerShell(\"OK\")",
+      "PowerShell(node --version 2>$null)",
+      "PowerShell(ffmpeg -version 2>$null)",
+      "PowerShell(node --version)",
+      "PowerShell(npm --version)",
+      "PowerShell($env:PATH -split ';' | Where-Object { $_ -match 'node' -or $_ -match 'npm' }; Get-Command node -ErrorAction SilentlyContinue | Select-Object Source; Get-Command npm -ErrorAction SilentlyContinue | Select-Object Source)"
+    ]
+  }
+}
