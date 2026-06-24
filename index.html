@@ -168,15 +168,7 @@
       z-index: 0;
     }
 
-    /* Overlay blanco semitransparente: aclara el video sin taparlo */
-    .hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(250, 247, 242, 0.45);
-      z-index: 1;
-    }
-
-    /* Contenido centrado sobre el overlay */
+    /* Contenido centrado sobre el video */
     .hero-content {
       position: relative;
       z-index: 2;
@@ -1166,9 +1158,6 @@
     <video class="hero-video-bg" autoplay muted loop playsinline>
       <source src="hero-video-1.mp4" type="video/mp4" />
     </video>
-
-    <!-- Overlay oscuro semitransparente -->
-    <div class="hero-overlay" aria-hidden="true"></div>
 
     <!-- Contenido centrado -->
     <div class="hero-content">
