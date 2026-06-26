@@ -1,0 +1,300 @@
+
+<h2 class="sr-only">Demo interactiva: Calculadora de food cost — Dataria Gastronomía</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --d-blue:#1B5BC1;--d-action:#306ECF;--d-sky:#45B5F3;--d-light:#56BCFA;
+  --d-tint:#EAF5FD;--d-soft:#F3F6F5;--d-dark:#353C42;--d-muted:#5A6871;
+  --d-border:#DCE5E9;--d-green:#1a7a4a;
+}
+.wrap{font-family:var(--font-sans,sans-serif);color:var(--d-dark);border-radius:12px;overflow:hidden;border:0.5px solid var(--d-border);min-height:420px}
+.intro{background:linear-gradient(160deg,#1B5BC1 0%,#2a6fd4 50%,#45B5F3 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;min-height:420px}
+.intro-logo-wrap{width:76px;height:76px;border-radius:50%;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.intro-logo-d{font-size:38px;font-weight:800;color:#fff;letter-spacing:-1px;line-height:1}
+.intro-brand{font-size:24px;font-weight:700;color:#fff;letter-spacing:-0.5px;margin-bottom:4px}
+.intro-brand span{color:var(--d-light)}
+.intro-tagline{font-size:11px;color:rgba(255,255,255,0.6);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:36px}
+.btn-enter{background:#fff;color:var(--d-blue);border:none;border-radius:8px;padding:13px 36px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity 0.15s}
+.btn-enter:hover{opacity:0.9}
+.app{display:none;flex-direction:column}
+.topbar{background:var(--d-blue);padding:10px 18px;display:flex;align-items:center;gap:10px}
+.topbar-logo{font-size:16px;font-weight:700;color:#fff;letter-spacing:-0.3px}
+.topbar-logo span{color:var(--d-sky)}
+.topbar-sub{font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:0.06em;text-transform:uppercase}
+.btn-back{background:rgba(255,255,255,0.15);border:none;color:#fff;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:4px;margin-right:4px}
+.btn-back:hover{background:rgba(255,255,255,0.25)}
+.tabs{display:flex;border-bottom:1px solid var(--d-border);background:var(--surface-2,#fff)}
+.tab{padding:10px 16px;font-size:12.5px;font-weight:500;cursor:pointer;color:var(--d-muted);border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;transition:color 0.15s;display:flex;align-items:center;gap:5px}
+.tab.active{color:var(--d-action);border-bottom-color:var(--d-action)}
+.tab:hover:not(.active){color:var(--d-dark)}
+.panel{padding:14px 18px;background:var(--surface-2,#fff);min-height:300px;display:none}
+.panel.active{display:block}
+.toolbar{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.toolbar h3{font-size:13.5px;font-weight:500;flex:1}
+.count-badge{background:var(--d-tint);color:var(--d-action);font-size:11px;font-weight:600;padding:2px 7px;border-radius:20px}
+.btn-add{background:var(--d-action);color:#fff;border:none;border-radius:6px;padding:5px 11px;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:4px}
+.btn-add:hover{background:var(--d-blue)}
+.search{border:0.5px solid var(--d-border);border-radius:6px;padding:5px 9px;font-size:12px;width:150px;color:var(--d-dark);background:var(--surface-2,#fff)}
+.tbl{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+.tbl th{text-align:left;padding:6px 8px;font-size:10.5px;font-weight:600;color:var(--d-muted);letter-spacing:0.04em;border-bottom:1px solid var(--d-border);background:var(--d-soft)}
+.tbl td{padding:7px 8px;border-bottom:0.5px solid var(--d-border);vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--d-tint)}
+.cost-val{font-weight:600;color:var(--d-action)}
+.chip{background:var(--d-soft);color:var(--d-muted);font-size:10.5px;padding:2px 6px;border-radius:4px}
+.btn-del{background:none;border:none;cursor:pointer;color:#ccc;font-size:13px;padding:2px 3px}
+.btn-del:hover{color:#e24b4a}
+.recipe-card{border:0.5px solid var(--d-border);border-radius:8px;margin-bottom:8px;overflow:hidden}
+.recipe-head{display:flex;align-items:center;padding:9px 12px;background:var(--d-soft);gap:8px}
+.recipe-name{font-weight:500;font-size:12.5px;flex:1}
+.recipe-cost{font-weight:700;color:var(--d-action);font-size:12.5px}
+.recipe-tbl{width:100%;border-collapse:collapse;font-size:11.5px}
+.recipe-tbl td{padding:5px 12px;border-bottom:0.5px solid var(--d-border)}
+.recipe-tbl td:last-child{text-align:right;color:var(--d-green);font-weight:600}
+.recipe-tbl td:first-child{color:var(--d-muted)}
+.recipe-tbl tr:last-child td{border-bottom:none}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.35);z-index:100;display:none;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface-2,#fff);border-radius:12px;width:460px;max-width:95vw;border:0.5px solid var(--d-border);overflow:hidden}
+.modal-head{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--d-border)}
+.modal-head h4{font-size:13.5px;font-weight:500}
+.modal-close{background:none;border:none;cursor:pointer;color:var(--d-muted);font-size:16px}
+.modal-body{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.field label{display:block;font-size:10.5px;font-weight:600;color:var(--d-muted);letter-spacing:0.04em;margin-bottom:3px}
+.field input,.field select{width:100%;border:0.5px solid var(--d-border);border-radius:6px;padding:5px 8px;font-size:12.5px;color:var(--d-dark);background:var(--surface-2,#fff)}
+.modal-foot{padding:10px 16px;border-top:0.5px solid var(--d-border);display:flex;justify-content:flex-end;gap:8px}
+.btn-cancel{background:none;border:0.5px solid var(--d-border);border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer;color:var(--d-muted)}
+.btn-save{background:var(--d-action);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:500;cursor:pointer}
+.empty{text-align:center;padding:28px;color:var(--d-muted);font-size:12.5px}
+</style>
+
+<div class="wrap">
+  <div class="intro" id="intro-screen">
+    <div class="intro-logo-wrap">
+      <div class="intro-logo-d">d</div>
+    </div>
+    <div class="intro-brand"><span>d</span>ataria</div>
+    <div class="intro-tagline">Gastronomía · Food cost</div>
+    <button class="btn-enter" onclick="enterApp()">Ver herramienta</button>
+  </div>
+
+  <div class="app" id="app-screen">
+    <div class="topbar">
+      <button class="btn-back" onclick="goBack()"><i class="ti ti-arrow-left" aria-hidden="true"></i> Inicio</button>
+      <div>
+        <div class="topbar-logo"><span>d</span>ataria · Gastronomía</div>
+        <div class="topbar-sub">Food cost</div>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('insumos',this)"><i class="ti ti-package" aria-hidden="true"></i> Insumos</button>
+      <button class="tab" onclick="switchTab('subproductos',this)"><i class="ti ti-puzzle" aria-hidden="true"></i> Subproductos</button>
+      <button class="tab" onclick="switchTab('platos',this)"><i class="ti ti-tools-kitchen-2" aria-hidden="true"></i> Platos</button>
+      <button class="tab" onclick="switchTab('proveedores',this)"><i class="ti ti-users" aria-hidden="true"></i> Proveedores</button>
+    </div>
+    <div class="panel active" id="tab-insumos">
+      <div class="toolbar">
+        <h3>Base de insumos <span class="count-badge" id="insumos-count">7</span></h3>
+        <input class="search" placeholder="Buscar..." oninput="filterInsumos(this.value)" />
+        <button class="btn-add" onclick="openModal('insumo')"><i class="ti ti-plus" aria-hidden="true"></i> Agregar</button>
+      </div>
+      <table class="tbl">
+        <colgroup><col style="width:28px"><col style="width:28%"><col style="width:18%"><col style="width:13%"><col style="width:10%"><col style="width:13%"><col style="width:14%"><col style="width:28px"></colgroup>
+        <thead><tr><th>#</th><th>Nombre</th><th>Formato</th><th>$ / Formato</th><th>Kg</th><th>$ / kg</th><th>Proveedor</th><th></th></tr></thead>
+        <tbody id="insumos-body"></tbody>
+      </table>
+    </div>
+    <div class="panel" id="tab-subproductos">
+      <div class="toolbar">
+        <h3>Subproductos <span class="count-badge" id="subs-count">2</span></h3>
+        <button class="btn-add" onclick="openModal('sub')"><i class="ti ti-plus" aria-hidden="true"></i> Nuevo</button>
+      </div>
+      <div id="subs-list"></div>
+    </div>
+    <div class="panel" id="tab-platos">
+      <div class="toolbar">
+        <h3>Recetas de platos <span class="count-badge" id="platos-count">2</span></h3>
+        <button class="btn-add" onclick="openModal('plato')"><i class="ti ti-plus" aria-hidden="true"></i> Nuevo</button>
+      </div>
+      <div id="platos-list"></div>
+    </div>
+    <div class="panel" id="tab-proveedores">
+      <div class="toolbar">
+        <h3>Proveedores <span class="count-badge" id="prov-count">4</span></h3>
+        <button class="btn-add" onclick="openModal('proveedor')"><i class="ti ti-plus" aria-hidden="true"></i> Agregar</button>
+      </div>
+      <table class="tbl">
+        <colgroup><col style="width:28px"><col style="width:18%"><col style="width:25%"><col style="width:25%"><col style="width:22%"><col style="width:28px"></colgroup>
+        <thead><tr><th>#</th><th>Rubro</th><th>Nombre</th><th>Contacto</th><th>Teléfono</th><th></th></tr></thead>
+        <tbody id="prov-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h4 id="modal-title">Nuevo insumo</h4>
+      <button class="modal-close" onclick="closeModal()"><i class="ti ti-x" aria-hidden="true"></i></button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveModal()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var insumos=[
+  {id:1,nombre:'Aceite de oliva',formato:'Botella 1L',pf:4200,kf:1,prov:'El Criollo'},
+  {id:2,nombre:'Harina 000',formato:'Bolsa 25kg',pf:18500,kf:25,prov:'Molinera Sur'},
+  {id:3,nombre:'Huevos',formato:'Docena',pf:1800,kf:0.72,prov:'Granja Alta'},
+  {id:4,nombre:'Tomate perita',formato:'Caja 10kg',pf:6500,kf:10,prov:'Mercado Central'},
+  {id:5,nombre:'Mozzarella',formato:'Horma 2kg',pf:9800,kf:2,prov:'Lácteos Norte'},
+  {id:6,nombre:'Albahaca fresca',formato:'Atado 100g',pf:800,kf:0.1,prov:'Verdulería Local'},
+  {id:7,nombre:'Sal fina',formato:'Bolsa 1kg',pf:450,kf:1,prov:'Distribuidora ABC'},
+];
+var subproductos=[
+  {id:1,nombre:'Salsa de tomate',comp:[{iid:4,kg:0.5,m:10},{iid:6,kg:0.05,m:0}]},
+  {id:2,nombre:'Masa para pizza',comp:[{iid:2,kg:0.3,m:5},{iid:1,kg:0.02,m:0},{iid:7,kg:0.005,m:0}]},
+];
+var platos=[
+  {id:1,nombre:'Pizza Margherita',comp:[{t:'s',rid:2,kg:0.3},{t:'s',rid:1,kg:0.15},{t:'i',rid:5,kg:0.12}]},
+  {id:2,nombre:'Ensalada caprese',comp:[{t:'i',rid:4,kg:0.2},{t:'i',rid:5,kg:0.15},{t:'i',rid:6,kg:0.05},{t:'i',rid:1,kg:0.02}]},
+];
+var proveedores=[
+  {id:1,rubro:'Aceites',nombre:'El Criollo',contacto:'Marcelo R.',tel:'11-4523-0011'},
+  {id:2,rubro:'Harinas',nombre:'Molinera Sur',contacto:'Paula V.',tel:'11-3310-5599'},
+  {id:3,rubro:'Lácteos',nombre:'Lácteos Norte',contacto:'Roberto P.',tel:'11-6611-2233'},
+  {id:4,rubro:'Verduras',nombre:'Mercado Central',contacto:'—',tel:'—'},
+];
+var modalType='';
+
+function enterApp(){
+  document.getElementById('intro-screen').style.display='none';
+  document.getElementById('app-screen').style.display='flex';
+  renderInsumos();
+}
+function goBack(){
+  document.getElementById('app-screen').style.display='none';
+  document.getElementById('intro-screen').style.display='flex';
+}
+function ckg(i){return i.kf?i.pf/i.kf:0}
+function fmt(n){return '$'+Math.round(n).toLocaleString('es-AR')}
+function subCosto(s){
+  return s.comp.reduce(function(t,c){
+    var i=insumos.find(function(x){return x.id===c.iid});
+    if(!i)return t;
+    var kb=c.m?c.kg/(1-c.m/100):c.kg;
+    return t+kb*ckg(i);
+  },0);
+}
+function compCosto(c){
+  if(c.t==='i'){var i=insumos.find(function(x){return x.id===c.rid});return i?c.kg*ckg(i):0;}
+  var s=subproductos.find(function(x){return x.id===c.rid});
+  if(!s)return 0;
+  var tot=s.comp.reduce(function(t,x){return t+x.kg},0);
+  return tot?c.kg*(subCosto(s)/tot):0;
+}
+function renderInsumos(list){
+  var l=list||insumos;
+  document.getElementById('insumos-count').textContent=l.length;
+  var h='';
+  l.forEach(function(ins,i){
+    h+='<tr><td style="color:var(--d-muted);font-size:10px">'+(i+1)+'</td><td style="font-weight:500">'+ins.nombre+'</td><td><span class="chip">'+ins.formato+'</span></td><td>'+fmt(ins.pf)+'</td><td>'+ins.kf+' kg</td><td class="cost-val">'+fmt(ckg(ins))+'/kg</td><td><span class="chip">'+ins.prov+'</span></td><td><button class="btn-del" onclick="delI('+ins.id+')" aria-label="Eliminar"><i class="ti ti-trash" aria-hidden="true"></i></button></td></tr>';
+  });
+  document.getElementById('insumos-body').innerHTML=h||'<tr><td colspan="8" class="empty">Sin insumos</td></tr>';
+}
+function filterInsumos(q){renderInsumos(insumos.filter(function(i){return i.nombre.toLowerCase().includes(q.toLowerCase())}))}
+function delI(id){insumos=insumos.filter(function(i){return i.id!==id});renderInsumos();}
+function renderSubs(){
+  document.getElementById('subs-count').textContent=subproductos.length;
+  var h='';
+  subproductos.forEach(function(s){
+    var c=subCosto(s);
+    h+='<div class="recipe-card"><div class="recipe-head"><span class="recipe-name">'+s.nombre+'</span><span style="font-size:10.5px;color:var(--d-muted);margin-right:6px">Costo total</span><span class="recipe-cost">'+fmt(c)+'</span><button class="btn-del" style="margin-left:6px" onclick="delS('+s.id+')" aria-label="Eliminar"><i class="ti ti-trash" aria-hidden="true"></i></button></div><table class="recipe-tbl">';
+    s.comp.forEach(function(c){
+      var i=insumos.find(function(x){return x.id===c.iid});
+      if(!i)return;
+      var kb=c.m?c.kg/(1-c.m/100):c.kg;
+      h+='<tr><td>'+i.nombre+'</td><td>'+c.kg+' kg neto'+(c.m?' · '+c.m+'% merma':'')+'</td><td>'+fmt(kb*ckg(i))+'</td></tr>';
+    });
+    h+='</table></div>';
+  });
+  document.getElementById('subs-list').innerHTML=h||'<div class="empty">Sin subproductos</div>';
+}
+function delS(id){subproductos=subproductos.filter(function(s){return s.id!==id});renderSubs();}
+function renderPlatos(){
+  document.getElementById('platos-count').textContent=platos.length;
+  var h='';
+  platos.forEach(function(p){
+    var c=p.comp.reduce(function(t,x){return t+compCosto(x)},0);
+    h+='<div class="recipe-card"><div class="recipe-head"><span class="recipe-name">'+p.nombre+'</span><span style="font-size:10.5px;color:var(--d-muted);margin-right:6px">Costo receta</span><span class="recipe-cost">'+fmt(c)+'</span><button class="btn-del" style="margin-left:6px" onclick="delP('+p.id+')" aria-label="Eliminar"><i class="ti ti-trash" aria-hidden="true"></i></button></div><table class="recipe-tbl">';
+    p.comp.forEach(function(c){
+      var lbl=c.t==='i'?(function(){var i=insumos.find(function(x){return x.id===c.rid});return i?i.nombre:'?'})():(function(){var s=subproductos.find(function(x){return x.id===c.rid});return s?'Sub · '+s.nombre:'?'})();
+      h+='<tr><td>'+lbl+'</td><td>'+c.kg+' kg</td><td>'+fmt(compCosto(c))+'</td></tr>';
+    });
+    h+='</table></div>';
+  });
+  document.getElementById('platos-list').innerHTML=h||'<div class="empty">Sin platos</div>';
+}
+function delP(id){platos=platos.filter(function(p){return p.id!==id});renderPlatos();}
+function renderProveedores(){
+  document.getElementById('prov-count').textContent=proveedores.length;
+  var h='';
+  proveedores.forEach(function(p,i){
+    h+='<tr><td style="color:var(--d-muted);font-size:10px">'+(i+1)+'</td><td><span class="chip">'+p.rubro+'</span></td><td style="font-weight:500">'+p.nombre+'</td><td>'+p.contacto+'</td><td>'+p.tel+'</td><td><button class="btn-del" onclick="delPr('+p.id+')" aria-label="Eliminar"><i class="ti ti-trash" aria-hidden="true"></i></button></td></tr>';
+  });
+  document.getElementById('prov-body').innerHTML=h||'<tr><td colspan="6" class="empty">Sin proveedores</td></tr>';
+}
+function delPr(id){proveedores=proveedores.filter(function(p){return p.id!==id});renderProveedores();}
+function switchTab(t,el){
+  document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active')});
+  document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('active')});
+  el.classList.add('active');
+  document.getElementById('tab-'+t).classList.add('active');
+  if(t==='insumos')renderInsumos();
+  if(t==='subproductos')renderSubs();
+  if(t==='platos')renderPlatos();
+  if(t==='proveedores')renderProveedores();
+}
+function openModal(type){
+  modalType=type;
+  var titles={insumo:'Nuevo insumo',sub:'Nuevo subproducto',plato:'Nuevo plato',proveedor:'Nuevo proveedor'};
+  document.getElementById('modal-title').textContent=titles[type];
+  var b='';
+  if(type==='insumo'){
+    b='<div class="field-row"><div class="field"><label>Nombre</label><input id="mn" placeholder="Ej: Tomate perita" /></div><div class="field"><label>Proveedor</label><select id="mp">'+proveedores.map(function(p){return'<option>'+p.nombre+'</option>'}).join('')+'<option>Sin proveedor</option></select></div></div><div class="field-row"><div class="field"><label>Formato</label><input id="mf" placeholder="Ej: Caja 5kg" /></div><div class="field"><label>$ por formato</label><input id="mpf" type="number" placeholder="0" /></div></div><div class="field"><label>Kg por formato</label><input id="mkg" type="number" placeholder="1" step="0.001" /></div>';
+  } else if(type==='sub'){
+    b='<div class="field"><label>Nombre del subproducto</label><input id="mn" placeholder="Ej: Pesto genovés" /></div>';
+  } else if(type==='plato'){
+    b='<div class="field"><label>Nombre del plato</label><input id="mn" placeholder="Ej: Risotto de hongos" /></div>';
+  } else if(type==='proveedor'){
+    b='<div class="field-row"><div class="field"><label>Nombre</label><input id="mn" placeholder="Ej: Distribuidora XYZ" /></div><div class="field"><label>Rubro</label><input id="mr" placeholder="Ej: Lácteos" /></div></div><div class="field-row"><div class="field"><label>Contacto</label><input id="mc" placeholder="Nombre del vendedor" /></div><div class="field"><label>Teléfono</label><input id="mt" placeholder="11-0000-0000" /></div></div>';
+  }
+  document.getElementById('modal-body').innerHTML=b;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open')}
+function saveModal(){
+  var n=document.getElementById('mn');
+  if(!n||!n.value.trim()){closeModal();return;}
+  var id=Date.now();
+  if(modalType==='insumo'){
+    insumos.push({id:id,nombre:n.value.trim(),formato:document.getElementById('mf').value||'—',pf:parseFloat(document.getElementById('mpf').value)||0,kf:parseFloat(document.getElementById('mkg').value)||1,prov:document.getElementById('mp').value});
+    closeModal();renderInsumos();
+  } else if(modalType==='sub'){
+    subproductos.push({id:id,nombre:n.value.trim(),comp:[]});
+    closeModal();renderSubs();
+  } else if(modalType==='plato'){
+    platos.push({id:id,nombre:n.value.trim(),comp:[]});
+    closeModal();renderPlatos();
+  } else if(modalType==='proveedor'){
+    proveedores.push({id:id,rubro:document.getElementById('mr').value||'General',nombre:n.value.trim(),contacto:document.getElementById('mc').value||'—',tel:document.getElementById('mt').value||'—'});
+    closeModal();renderProveedores();
+  }
+}
+</script>
